@@ -1,6 +1,6 @@
 const mqttOptions = {
   clientId: "70519268-8c62-4402-8aa1-f7dc83f70b7f",
-  host: "localhost",
+  host: "127.0.0.1",
   port: 1883, // Adjust for secure connections
   username: "admin",
   password: "passcode",
