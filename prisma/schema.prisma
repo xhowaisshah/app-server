@@ -1,0 +1,68 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model UPS {
+  id           Int       @id @default(autoincrement())
+  serialNumber String    @unique
+  company      String
+  model        String
+  version      String
+  ownerId      Int
+  userRefId    Int?
+  wifi         String
+  owner        User      @relation("UPS_ownerIdToUser", fields: [ownerId], references: [id])
+  user         User?     @relation("UPS_userRefIdToUser", fields: [userRefId], references: [id])
+  logs         UPSData[]
+
+  @@index([id, serialNumber])
+}
+
+model User {
+  id            Int       @id @default(autoincrement())
+  email         String    @unique
+  name          String?
+  password      String?
+  passwordOtp   Int?
+  OtpExpiry     DateTime?
+  role          Role      @default(USER)
+  profile       String?
+  ownedUPS      UPS[]     @relation("UPS_ownerIdToUser")
+  referencedUPS UPS[]     @relation("UPS_userRefIdToUser")
+
+  @@index([email])
+}
+
+enum Role {
+  OWNER
+  USER
+}
+
+model UPSData {
+  id                Int      @id @default(autoincrement())
+  ups               UPS      @relation(fields: [upsId], references: [id])
+  serialNumber      String
+  upsId             Int
+  inputVoltage      Float
+  inputFaultVoltage Float
+  outputVoltage     Float
+  outputCurrent     Float
+  inputFrequency    Float
+  batteryVoltage    Float
+  temperature       Float
+
+  beeper Int
+  shutdown Int
+  upsStat Int
+  avgStat Int
+  batteryStat Int
+  acStat Int
+  timestamp         DateTime @default(now())
+
+  @@index([upsId, timestamp])
+}
