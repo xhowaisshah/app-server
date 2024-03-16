@@ -32,6 +32,7 @@ app.get("/", (req: Request, res: Response) => {
 
 client.on("message", async (topic, message) => {
   console.log("topic: ", topic);
+  console.log("message: ", message.toString());
   await SyncData(message);
 });
 
