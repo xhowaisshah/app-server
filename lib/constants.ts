@@ -1,9 +1,11 @@
 const mqttOptions = {
-  clientId: "70519268-8c62-4402-8aa1-f7dc83f70b7f",
-  host: "127.0.0.1",
-  port: 1883, // Adjust for secure connections
-  username: "admin",
-  password: "passcode",
+  // clientId: "70519268-8c62-4402-8aa1-f7dc83f70b7f",
+  // host: "127.0.0.1",
+  // port: 1883, // Adjust for secure connections
+  username: "xhowaisshah",
+  password: "XhOwaisN11#$%:",
+  clientId: `mqttjs_${Math.random().toString(16).substr(2, 8)}`,
+
   // TLS/SSL configuration (optional):
   // rejectUnauthorized: false, // Set to true for strict checking
   // cert: fs.readFileSync('path/to/client-cert.pem'), // Provide client certificate if needed
