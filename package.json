@@ -2,13 +2,13 @@
   "name": "app-server",
   "version": "1.0.0",
   "description": "A server application using Prisma, Node.js, and MQTT for AWS VPS deployment",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon index.ts",
     "start": "node -r ts-node/register index.ts",
     "prisma:migrate": "prisma migrate deploy",
-    "prisma:generate": "prisma generate"
+    "prisma:generate": "prisma generat  e"
   },
   "keywords": ["prisma", "nodejs", "mqtt", "aws", "vps", "server"],
   "author": "",
