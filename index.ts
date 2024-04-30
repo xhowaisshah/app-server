@@ -13,7 +13,7 @@ const subscribedTopics = new Set();
 const app: Application = express();
 const port = process.env.PORT || 8000;
 
-export const client = mqtt.connect('wss://572c94c900a0483dbc61d2c5afee025a.s1.eu.hivemq.cloud:8884/mqtt', mqttOptions);
+export const client = mqtt.connect('wss://d6675c7ce4294e19a910a114a9f681bb.s1.eu.hivemq.cloud:8884/mqtt', mqttOptions);
 
 
 client.on("connect", () => {
@@ -22,7 +22,7 @@ client.on("connect", () => {
   console.error("MQTT client connection error:", error);
 });
 
-const topic = "status";
+const topic = "UPS_STATUS_RESPONSE";
 if (!subscribedTopics.has(topic)) {
   client.subscribe(topic, (err) => {
     if (err) {
