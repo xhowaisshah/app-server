@@ -22,7 +22,7 @@ client.on("connect", () => {
   console.error("MQTT client connection error:", error);
 });
 
-const topic = "UPS_STATUS_RESPONSE";
+const topic = "UPS_EVENT_LOG";
 if (!subscribedTopics.has(topic)) {
   client.subscribe(topic, (err) => {
     if (err) {
@@ -41,6 +41,7 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 client.on("message", async (topic, message) => {
+  console.log(`Received message on topic: ${topic}`);
   await SyncData(message);
 });
 

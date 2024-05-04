@@ -196,4 +196,29 @@ userRouter.post('/logs', async (req, res) => {
     }
 });
 
+
+userRouter.get('/delete-all/:serialNumber', async (req, res) => {
+    const { serialNumber } = req.params;
+    try {
+        const upsExists = await UpsExist(serialNumber);
+        if (!upsExists) {
+            return res.status(404).json({ error: "UPS not found", success: false });
+        }
+        await db.uPS.update({
+            where: {
+                serialNumber,
+            },
+            data: {
+                logs: {
+                    deleteMany: {}
+                }
+            }
+        });
+        return res.status(200).json({ message: "All logs deleted successfully", success: true });
+    } catch (error) {
+        console.error("Error deleting logs:", error);
+        return res.status(500).json({ error: "Internal server error", success: false });
+    }
+});
+
 export default userRouter;
