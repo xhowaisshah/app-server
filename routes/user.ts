@@ -11,7 +11,7 @@ userRouter.post('/onboarding', async (req, res) => {
     if (!validatedFields.success) {
         return res.status(400).json({ error: "Invalid data", message: errorToMessage(validatedFields.error) });
     }
-    const { serialNumber, email } = validatedFields.data;
+    const { serialNumber, email, company, model, version } = validatedFields.data;
 
 
     try {
@@ -29,9 +29,9 @@ userRouter.post('/onboarding', async (req, res) => {
             await db.uPS.create({
                 data: {
                     serialNumber,
-                    company: '',
-                    model: '',
-                    version: '',
+                    company,
+                    model,
+                    version,
                     wifi: '',
                     owner: {
                         connect: { email }
@@ -48,15 +48,16 @@ userRouter.post('/onboarding', async (req, res) => {
     }
 });
 
+
 userRouter.post('/ups-listing', async (req, res) => {
 
-     const validatedFields = emailSchema.safeParse(req.body);
-     if (!validatedFields.success) {
-         return res.status(400).json({ error: "Invalid data", message: errorToMessage(validatedFields.error) });
-     }
+    const validatedFields = emailSchema.safeParse(req.body);
+    if (!validatedFields.success) {
+        return res.status(400).json({ error: "Invalid data", message: errorToMessage(validatedFields.error) });
+    }
 
-     const { email } = validatedFields.data;
-     try{
+    const { email } = validatedFields.data;
+    try {
 
         const upsList = await db.uPS.findMany({
             where: {
@@ -66,15 +67,15 @@ userRouter.post('/ups-listing', async (req, res) => {
             }
         });
 
-        if(upsList.length === 0) {
+        if (upsList.length === 0) {
             return res.status(404).json({ error: "No UPS found", success: false });
         }
-        
+
         return res.status(200).json({ message: "UPS list fetched successfully", success: true, data: upsList });
-     } catch (error) {
-         console.error("Ups listing error:", error);
-         return res.status(500).json({ error: "Internal server error", success: false });
-     }
+    } catch (error) {
+        console.error("Ups listing error:", error);
+        return res.status(500).json({ error: "Internal server error", success: false });
+    }
 });
 
 userRouter.post('/logs-by-date', async (req, res) => {
@@ -217,6 +218,35 @@ userRouter.get('/delete-all/:serialNumber', async (req, res) => {
         return res.status(200).json({ message: "All logs deleted successfully", success: true });
     } catch (error) {
         console.error("Error deleting logs:", error);
+        return res.status(500).json({ error: "Internal server error", success: false });
+    }
+});
+
+userRouter.post('/disconnect', async (req, res) => {
+    const { serialNumber, email } = req.body;
+    try {
+        const upsExists = await UpsExist(serialNumber);
+        if (!upsExists) {
+            return res.status(404).json({ error: "UPS not found", success: false });
+        }
+
+        // First, disconnect the UPS from the user
+        await db.user.update({
+            where: {
+                email
+            },
+            data: {
+                ownedUPS: {
+                    disconnect: {
+                        serialNumber
+                    }
+                }
+            }
+        });
+
+        return res.status(200).json({ message: "UPS disconnected successfully", success: true });
+    } catch (error) {
+        console.error("Error during UPS disconnection:", error);
         return res.status(500).json({ error: "Internal server error", success: false });
     }
 });

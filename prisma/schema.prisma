@@ -13,14 +13,12 @@ model UPS {
   company      String
   model        String
   version      String
-  ownerId      Int
+  ownerId      Int?      
   userRefId    Int?
   wifi         String
-  owner        User      @relation("UPS_ownerIdToUser", fields: [ownerId], references: [id])
+  owner        User?     @relation("UPS_ownerIdToUser", fields: [ownerId], references: [id])
   user         User?     @relation("UPS_userRefIdToUser", fields: [userRefId], references: [id])
   logs         UPSData[]
-
-  @@index([id, serialNumber])
 }
 
 model User {

@@ -4,8 +4,8 @@ import db from "../db";
 const SyncData = async (message: Buffer) => {
   try {
     const data: UpsDataArray = JSON.parse(message.toString());
-    const uniqueData = Array.from(new Map(data.map(item => [item.SrNo, item])).values());
-
+    const uniqueData = [...new Map(data.map(item => [item.SrNo, item])).values()];
+    console.log(uniqueData);
     await db.$transaction(async (tx) => {
       const updates = uniqueData.map(async (item) => {
         const existingCount = await tx.uPS.count({

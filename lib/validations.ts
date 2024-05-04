@@ -18,6 +18,9 @@ const emailSchema = z.object({
 const OnbordingSchema = z.object({
   serialNumber: z.string().min(1, "Serial number is required"),
   email: z.string().email(),
+  company: z.string().min(1, "Company name is required"),
+  model: z.string().min(1, "Model is required"),
+  version: z.string().min(1, "Version is required"),
 });
 
 const OtpValidationSchema = z.object({
