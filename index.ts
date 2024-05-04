@@ -32,7 +32,7 @@ if (!subscribedTopics.has(topic)) {
       console.log(`Subscribed to topic: ${topic}`);
     }
   });
-}
+};
 
 app.use(express.json());
 
