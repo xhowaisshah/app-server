@@ -3,7 +3,7 @@ import db from "../db";
 
 const SyncData = async (message: Buffer) => {
   try {
-    const data: UpsDataArray = [JSON.parse(message.toString())];
+    const data: UpsDataArray = JSON.parse(message.toString());
     const uniqueData = Array.from(new Map(data.map(item => [item.SrNo, item])).values());
 
     await db.$transaction(async (tx) => {
