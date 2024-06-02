@@ -227,14 +227,9 @@ userRouter.get('/delete-all/:serialNumber', async (req: Request, res: Response) 
         if (!upsExists) {
             return res.status(404).json({ error: "UPS not found", success: false });
         }
-        await db.uPS.update({
+        await db.uPSData.deleteMany({
             where: {
                 serialNumber,
-            },
-            data: {
-                logs: {
-                    deleteMany: {}
-                }
             }
         });
         return res.status(200).json({ message: "All logs deleted successfully", success: true });
