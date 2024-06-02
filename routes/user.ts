@@ -38,10 +38,22 @@ userRouter.post('/onboarding', async (req, res) => {
                     }
                 }
             });
-            return res.status(200).json({ message: "Onboarded successfully", success: true });
         } else {
-            return res.status(409).json({ error: "UPS already exists", success: false });
+            await db.user.update({
+                where: {
+                    email
+                },
+                data: {
+                    referencedUPS: {
+                        connect: {
+                            serialNumber
+                        }
+                    }
+                }
+            });
         }
+
+        return res.status(200).json({ message: "Onboarded successfully", success: true });
     } catch (error) {
         console.error("Onboarding error:", error);
         return res.status(500).json({ error: "Internal server error", success: false });
