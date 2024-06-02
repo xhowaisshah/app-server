@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Request, Response, Router } from "express";
 import db from "../lib/db";
 import { emailSchema, OtpValidationSchema, ResetPasswordSchema, SignInSchema, SignUpSchema, errorToMessage } from "../lib/validations";
 import bcrypt from 'bcryptjs';
@@ -6,7 +6,7 @@ import otpgenerator from 'otp-generator';
 import { createUser, userExists } from "../lib/db-actions/auth";
 const authRouter = Router();
 
-authRouter.post('/sign-up', async (req, res) => {
+authRouter.post('/sign-up', async (req: Request, res: Response) => {
     const validatedFields = SignUpSchema.safeParse(req.body);
 
     if (!validatedFields.success) {
@@ -24,12 +24,12 @@ authRouter.post('/sign-up', async (req, res) => {
         const newUser = await createUser(email, password, name);
         const { password: _, ...userInfo } = newUser;
         res.status(201).json({ message: "User created successfully", user: userInfo });
-    } catch (error) {
+    } catch (error: any) {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
 
-authRouter.post('/sign-in', async (req, res) => {
+authRouter.post('/sign-in', async (req: Request, res: Response) => {
     const validatedFields = SignInSchema.safeParse(req.body);
 
     if (!validatedFields.success) {
@@ -51,12 +51,12 @@ authRouter.post('/sign-in', async (req, res) => {
 
         const { password: _, ...userInfo } = user;
         res.status(200).json({ message: "User signed in successfully", user: userInfo });
-    } catch (error) {
+    } catch (error: any) {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
 
-authRouter.post('/forgot-password', async (req, res) => {
+authRouter.post('/forgot-password', async (req: Request, res: Response) => {
     const validatedFields = emailSchema.safeParse(req.body);
     if (!validatedFields.success) {
         return res.status(400).json({ error: "Invalid email", message: errorToMessage(validatedFields.error) });
@@ -88,12 +88,12 @@ authRouter.post('/forgot-password', async (req, res) => {
 
         res.status(200).json({ message: "OTP sent successfully", redirect: "/auth/reset-password" });
 
-    } catch (error) {
+    } catch (error: any) {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
 
-authRouter.post('/otp-verification', async (req, res) => {
+authRouter.post('/otp-verification', async (req: Request, res: Response) => {
     const validatedFields = OtpValidationSchema.safeParse(req.body);
 
     if (!validatedFields.success) {
@@ -119,12 +119,12 @@ authRouter.post('/otp-verification', async (req, res) => {
         }
 
         res.status(200).json({ message: "OTP verified successfully", redirect: "/auth/reset-password" });
-    } catch (error) {
+    } catch (error: any) {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
 
-authRouter.post('/reset-password', async (req, res) => {
+authRouter.post('/reset-password', async (req: Request, res: Response) => {
     const validatedFields = ResetPasswordSchema.safeParse(req.body);
 
     if (!validatedFields.success) {
@@ -146,7 +146,7 @@ authRouter.post('/reset-password', async (req, res) => {
         })
 
         res.status(200).json({ message: "Password reset successfully", redirect: "/auth/sign-in" });
-    } catch (error) {
+    } catch (error: any) {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });

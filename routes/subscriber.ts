@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Request, Response, Router } from "express";
 import { client } from "../index";
 import { ConnectionSchema, errorToMessage } from "../lib/validations";
 
@@ -7,7 +7,7 @@ const statusRouter = Router();
 const subscribedTopics = new Set();
 
 
-statusRouter.post('/subscriber', async (req, res) => {
+statusRouter.post('/subscriber', async (req: Request, res: Response) => {
     const validatedFields = ConnectionSchema.safeParse(req.body);
 
     if (!validatedFields.success) {
@@ -38,7 +38,7 @@ statusRouter.post('/subscriber', async (req, res) => {
             default:
                 res.status(400).json({ error: "Invalid connection type" });
         }
-    } catch (error) {
+    } catch (error: any) {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });

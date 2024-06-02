@@ -1,11 +1,11 @@
-import { Router } from "express";
+import { Request, Response, Router } from "express";
 import { emailSchema, OnbordingSchema, errorToMessage, getLogsSchema } from "../lib/validations";
 import { user } from "../lib/db-actions/auth";
 import db from "../lib/db";
 import { UpsExist } from "../lib/db-actions/user";
 const userRouter = Router();
 
-userRouter.post('/onboarding', async (req, res) => {
+userRouter.post('/onboarding', async (req: Request, res: Response) => {
     const validatedFields = OnbordingSchema.safeParse(req.body);
 
     if (!validatedFields.success) {
@@ -54,14 +54,14 @@ userRouter.post('/onboarding', async (req, res) => {
         }
 
         return res.status(200).json({ message: "Onboarded successfully", success: true });
-    } catch (error) {
+    } catch (error: any) {
         console.error("Onboarding error:", error);
         return res.status(500).json({ error: "Internal server error", success: false });
     }
 });
 
 
-userRouter.post('/ups-listing', async (req, res) => {
+userRouter.post('/ups-listing', async (req: Request, res: Response) => {
 
     const validatedFields = emailSchema.safeParse(req.body);
     if (!validatedFields.success) {
@@ -84,13 +84,13 @@ userRouter.post('/ups-listing', async (req, res) => {
         }
 
         return res.status(200).json({ message: "UPS list fetched successfully", success: true, data: upsList });
-    } catch (error) {
+    } catch (error: any) {
         console.error("Ups listing error:", error);
         return res.status(500).json({ error: "Internal server error", success: false });
     }
 });
 
-userRouter.post('/logs-by-date', async (req, res) => {
+userRouter.post('/logs-by-date', async (req: Request, res: Response) => {
     const validatedFields = getLogsSchema.safeParse(req.body);
     if (!validatedFields.success) {
         return res.status(400).json({ error: "Invalid data", message: errorToMessage(validatedFields.error) });
@@ -144,13 +144,13 @@ userRouter.post('/logs-by-date', async (req, res) => {
                 }))
             }
         });
-    } catch (error) {
+    } catch (error: any) {
         console.error("Error fetching logs:", error);
         return res.status(500).json({ error: "Internal server error", success: false });
     }
 });
 
-userRouter.post('/logs', async (req, res) => {
+userRouter.post('/logs', async (req: Request, res: Response) => {
     const validatedFields = getLogsSchema.safeParse(req.body);
     if (!validatedFields.success) {
         return res.status(400).json({ error: "Invalid data", message: errorToMessage(validatedFields.error) });
@@ -203,14 +203,14 @@ userRouter.post('/logs', async (req, res) => {
                 }))
             }
         });
-    } catch (error) {
+    } catch (error: any) {
         console.error("Error fetching logs:", error);
         return res.status(500).json({ error: "Internal server error", success: false });
     }
 });
 
 
-userRouter.get('/delete-all/:serialNumber', async (req, res) => {
+userRouter.get('/delete-all/:serialNumber', async (req: Request, res: Response) => {
     const { serialNumber } = req.params;
     try {
         const upsExists = await UpsExist(serialNumber);
@@ -228,13 +228,13 @@ userRouter.get('/delete-all/:serialNumber', async (req, res) => {
             }
         });
         return res.status(200).json({ message: "All logs deleted successfully", success: true });
-    } catch (error) {
+    } catch (error: any) {
         console.error("Error deleting logs:", error);
         return res.status(500).json({ error: "Internal server error", success: false });
     }
 });
 
-userRouter.post('/disconnect', async (req, res) => {
+userRouter.post('/disconnect', async (req: Request, res: Response) => {
     const { serialNumber, email } = req.body;
     try {
         const upsExists = await UpsExist(serialNumber);
@@ -257,7 +257,7 @@ userRouter.post('/disconnect', async (req, res) => {
         });
 
         return res.status(200).json({ message: "UPS disconnected successfully", success: true });
-    } catch (error) {
+    } catch (error: any) {
         console.error("Error during UPS disconnection:", error);
         return res.status(500).json({ error: "Internal server error", success: false });
     }
