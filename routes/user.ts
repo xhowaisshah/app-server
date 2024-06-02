@@ -79,11 +79,21 @@ userRouter.post('/ups-listing', async (req: Request, res: Response) => {
             }
         });
 
-        if (upsList.length === 0) {
+        const referencedUPS = await db.uPS.findMany({
+            where: {
+                user: {
+                    email
+                }
+            }
+        });
+
+        const allUPS = [...upsList, ...referencedUPS];
+
+        if (allUPS.length === 0) {
             return res.status(404).json({ error: "No UPS found", success: false });
         }
 
-        return res.status(200).json({ message: "UPS list fetched successfully", success: true, data: upsList });
+        return res.status(200).json({ message: "UPS list fetched successfully", success: true, data: allUPS });
     } catch (error: any) {
         console.error("Ups listing error:", error);
         return res.status(500).json({ error: "Internal server error", success: false });
