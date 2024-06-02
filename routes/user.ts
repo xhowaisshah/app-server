@@ -262,6 +262,11 @@ userRouter.post('/disconnect', async (req: Request, res: Response) => {
                     disconnect: {
                         serialNumber
                     }
+                },
+                referencedUPS: {
+                    disconnect: {
+                        serialNumber
+                    }
                 }
             }
         });
